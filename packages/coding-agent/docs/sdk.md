@@ -67,6 +67,8 @@ A prompt sent while the session is already streaming must specify whether it sho
 
 A steering message enters after the current assistant turn and its tool calls. A follow-up enters after the current run finishes its pending work. `steer()` and `followUp()` expose those behaviors directly.
 
+`retry()` resumes the last interrupted turn without adding a new user message. It can retry an errored, aborted, or truncated assistant response, or continue from a trailing user or tool-result message. It rejects while the session is streaming or compacting, and it rejects when the last assistant response completed normally.
+
 `abort()` stops the active operation and waits for the session to become idle. `waitForIdle()` waits without aborting it.
 
 ## Subscribing to events

@@ -245,6 +245,8 @@ export type SwitchSessionHandler = (
 
 export type ReloadHandler = () => Promise<void>;
 
+export type RetryHandler = () => Promise<void>;
+
 export type ShutdownHandler = () => void;
 
 /**
@@ -377,6 +379,7 @@ export class ExtensionRunner {
 	private navigateTreeHandler: NavigateTreeHandler = async () => ({ cancelled: false });
 	private switchSessionHandler: SwitchSessionHandler = async () => ({ cancelled: false });
 	private reloadHandler: ReloadHandler = async () => {};
+	private retryHandler: RetryHandler = async () => {};
 	private shutdownHandler: ShutdownHandler = () => {};
 	private shortcutDiagnostics: ResourceDiagnostic[] = [];
 	private commandDiagnostics: ResourceDiagnostic[] = [];
@@ -508,6 +511,7 @@ export class ExtensionRunner {
 			this.navigateTreeHandler = actions.navigateTree;
 			this.switchSessionHandler = actions.switchSession;
 			this.reloadHandler = actions.reload;
+			this.retryHandler = actions.retry;
 			return;
 		}
 
@@ -517,6 +521,7 @@ export class ExtensionRunner {
 		this.navigateTreeHandler = async () => ({ cancelled: false });
 		this.switchSessionHandler = async () => ({ cancelled: false });
 		this.reloadHandler = async () => {};
+		this.retryHandler = async () => {};
 	}
 
 	setUIContext(uiContext?: ExtensionUIContext, mode: ExtensionMode = "print"): void {
@@ -921,6 +926,10 @@ export class ExtensionRunner {
 		context.reload = () => {
 			this.assertActive();
 			return this.reloadHandler();
+		};
+		context.retry = () => {
+			this.assertActive();
+			return this.retryHandler();
 		};
 		return context;
 	}

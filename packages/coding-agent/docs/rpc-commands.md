@@ -412,6 +412,21 @@ Response:
 
 ## Retry
 
+### retry
+
+Retry the last interrupted turn or continue from the current transcript. This is the RPC form of `/retry`.
+
+```json
+{"type": "retry"}
+```
+
+Response:
+```json
+{"type": "response", "command": "retry", "success": true}
+```
+
+A failure response is emitted when preflight rejects, for example while a response is streaming, while compacting, or when the last assistant response completed normally.
+
 ### set_auto_retry
 
 Enable or disable automatic retry on transient errors (overloaded, rate limit, 5xx).

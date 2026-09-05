@@ -1195,10 +1195,11 @@ describe("ExtensionRunner", () => {
 	});
 
 	describe("command context", () => {
-		it("passes fork options through to the bound handler", async () => {
+		it("passes command actions through to the bound handlers", async () => {
 			const runtime = createExtensionRuntime();
 			const runner = new ExtensionRunner([], runtime, tempDir, sessionManager, modelRegistry);
 			const fork = vi.fn(async () => ({ cancelled: false }));
+			const retry = vi.fn(async () => {});
 
 			runner.bindCommandContext({
 				waitForIdle: async () => {},
@@ -1207,6 +1208,7 @@ describe("ExtensionRunner", () => {
 				navigateTree: async () => ({ cancelled: false }),
 				switchSession: async () => ({ cancelled: false }),
 				reload: async () => {},
+				retry,
 			});
 
 			const commandContext = runner.createCommandContext();
@@ -1215,6 +1217,9 @@ describe("ExtensionRunner", () => {
 
 			await commandContext.fork("entry-2", { position: "at" });
 			expect(fork).toHaveBeenLastCalledWith("entry-2", { position: "at" });
+
+			await commandContext.retry();
+			expect(retry).toHaveBeenCalledTimes(1);
 		});
 	});
 
